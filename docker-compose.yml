@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: postgres-personal
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PWD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"  # Expose port MySQL
+    volumes:
+      - db_postgres_personal_data:/var/lib/postgresql/data  # Menyimpan data postgre agar persisten
+#    networks:
+#      - mysql_network
+
+volumes:
+  db_postgres_personal_data:
+    driver: local
