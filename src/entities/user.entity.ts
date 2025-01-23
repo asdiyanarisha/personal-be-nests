@@ -21,7 +21,7 @@ export class User {
   role: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
-  readonly createdAt!: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn({ type: 'timestamptz' })
   readonly updatedAt!: Date;
