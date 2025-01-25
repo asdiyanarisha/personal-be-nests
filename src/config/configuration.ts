@@ -7,4 +7,5 @@ export default () => ({
     password: process.env.POSTGRES_PWD || 'postgres',
     name: process.env.POSTGRES_DB || 'scrape',
   },
+  jwt_key: process.env.JWT_KEY,
 });
