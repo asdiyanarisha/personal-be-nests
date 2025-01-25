@@ -5,12 +5,15 @@ import { AppService } from './app.service';
 import { UserUseCasesModule } from './usecase/user';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
-import { User } from './entities';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(typeOrmConfig),
-    TypeOrmModule.forFeature([User]),
+    ConfigModule.forRoot({
+      load: [configuration],
+    }),
+    TypeOrmModule.forRootAsync(typeOrmConfig),
     UserUseCasesModule,
   ],
   controllers: [AppController, RegisterController],
