@@ -7,15 +7,25 @@ import * as bcrypt from 'bcrypt';
 import { ResponseCommon } from '../../dtos/response';
 import { loginAuthDto, ResponseLoginDto } from '../../dtos/auth';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserUseCase {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
+
+  async userMe(token: string): Promise<ResponseCommon> {
+    const payload = await this.jwtService.verifyAsync(token, {
+      secret: this.configService.get('jwt_key'),
+    });
+
+    console.log(payload);
+    return this.createResponse('success', 'successfully get user');
+  }
 
   async login(bodyLogin: loginAuthDto): Promise<any> {
     const prevUser = await this.userRepository.findOne({
