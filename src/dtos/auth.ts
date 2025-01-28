@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class loginAuthDto {
   @IsString()
@@ -22,4 +22,8 @@ export class ResponseLoginDto {
   @IsString()
   @IsNotEmpty()
   token: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  expired_at: number;
 }

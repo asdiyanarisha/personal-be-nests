@@ -49,11 +49,22 @@ export class UserUseCase {
       return this.createResponse('unauthorized', 'password mismatch');
     }
 
-    const payload = { sub: prevUser.id, role: prevUser.role };
+    const expiredAt = new Date().getTime() + 1000 * 60 * 60 * 24; // 24 hours
+
+    const payload = {
+      sub: prevUser.id,
+      role: prevUser.role,
+      exp: Math.floor(expiredAt / 1000),
+    };
 
     const token = await this.jwtService.signAsync(payload);
 
-    return this.createResponseToken('success', 'login successfully', token);
+    return this.createResponseToken(
+      'success',
+      'login successfully',
+      token,
+      payload.exp,
+    );
   }
 
   async createUser(registerUser: RegisterUserDto): Promise<ResponseCommon> {
@@ -96,11 +107,13 @@ export class UserUseCase {
     status: string,
     message: string,
     token: string,
+    expiredAt: number,
   ): ResponseCommon {
     const resp = new ResponseLoginDto();
     resp.status = status;
     resp.message = message;
     resp.token = token;
+    resp.expired_at = expiredAt;
 
     return resp;
   }
