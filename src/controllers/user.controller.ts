@@ -1,13 +1,7 @@
-import {
-  Controller,
-  Get,
-  Res,
-  Headers,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Controller, Get, Res, Headers } from '@nestjs/common';
 import { UserUseCase } from '../usecase/user';
 import { Response } from 'express';
-import { JsonWebTokenError, TokenExpiredError } from "@nestjs/jwt";
+import { JsonWebTokenError, TokenExpiredError } from '@nestjs/jwt';
 import { BuildResponseUtil } from '../util';
 
 @Controller('api/user')

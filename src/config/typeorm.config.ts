@@ -1,6 +1,6 @@
 import { TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { User } from '../entities';
+import { User, Blog } from '../entities';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as process from 'node:process';
 
@@ -13,9 +13,10 @@ export const typeOrmConfig: TypeOrmModuleAsyncOptions = {
     username: config.get('database.user'),
     password: config.get('database.password'),
     database: config.get('database.name'),
-    entities: [User],
+    entities: [User, Blog],
     synchronize: false,
     logging: true,
+    autoLoadEntities: true,
   }),
   inject: [ConfigService],
 };

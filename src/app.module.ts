@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserUseCasesModule } from './usecase/user';
@@ -10,8 +10,10 @@ import {
   AuthController,
   UserController,
   RegisterController,
+  BlogController,
 } from './controllers';
 import { BuildResponseUtil } from './util';
+import { AuthMiddleware } from './middleware/auth.middleware';
 
 @Module({
   imports: [
@@ -24,10 +26,15 @@ import { BuildResponseUtil } from './util';
   controllers: [
     AppController,
     RegisterController,
+    BlogController,
     AuthController,
     UserController,
   ],
   providers: [AppService, BuildResponseUtil],
   exports: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes(BlogController);
+  }
+}
