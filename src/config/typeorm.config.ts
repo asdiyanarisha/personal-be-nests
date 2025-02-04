@@ -2,6 +2,7 @@ import { TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { User } from '../entities';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import * as process from 'node:process';
 
 export const typeOrmConfig: TypeOrmModuleAsyncOptions = {
   imports: [ConfigModule],
@@ -31,3 +32,11 @@ export const AppDataSource = new DataSource({
   migrationsRun: false,
   logging: true,
 });
+
+AppDataSource.initialize()
+  .then(() => {
+    console.log('Data Source has been initialized!');
+  })
+  .catch((err) => {
+    console.error('Error during Data Source initialization', err);
+  })
