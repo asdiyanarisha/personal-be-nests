@@ -1,17 +1,17 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
-import { UserUseCase } from '../usecase/user';
+import { BlogUseCase } from '../usecase/blog';
 import { Response } from 'express';
-import { loginAuthDto } from '../dtos/auth';
+import { CreatePostBlog } from '../dtos/blog';
 
 @Controller('api/blog')
 export class BlogController {
-  constructor(private userUseCase: UserUseCase) {}
+  constructor(private blogUseCase: BlogUseCase) {}
 
   @Post()
-  async postBlog(@Res() res: Response) {
-    console.log('Enter');
+  async createPostBlog(@Body() req: CreatePostBlog, @Res() res: Response) {
+    const result = this.blogUseCase.createPost(req);
 
-    res.status(200).send({});
+    res.status(201).send(result);
     return;
   }
 }

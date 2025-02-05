@@ -14,6 +14,7 @@ import {
 } from './controllers';
 import { BuildResponseUtil } from './util';
 import { AuthMiddleware } from './middleware/auth.middleware';
+import { BlogUseCasesModule } from './usecase/blog';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AuthMiddleware } from './middleware/auth.middleware';
     }),
     TypeOrmModule.forRootAsync(typeOrmConfig),
     UserUseCasesModule,
+    BlogUseCasesModule,
   ],
   controllers: [
     AppController,

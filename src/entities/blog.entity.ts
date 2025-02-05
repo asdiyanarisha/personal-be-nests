@@ -5,7 +5,6 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { config } from 'dotenv';
 
 @Entity()
 export class Blog {
@@ -20,6 +19,9 @@ export class Blog {
 
   @Column()
   tags: string;
+
+  @Column()
+  slug: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt!: Date;
