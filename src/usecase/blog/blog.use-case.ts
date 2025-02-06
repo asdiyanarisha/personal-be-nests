@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from '@nestjs/typeorm';
 import { Blog } from '../../entities';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { CreatePostBlog } from '../../dtos/blog';
+import { BuildResponseUtil } from '../../util';
 
 @Injectable()
 export class BlogUseCase {
@@ -11,6 +12,7 @@ export class BlogUseCase {
     @InjectRepository(Blog)
     private blogRepository: Repository<Blog>,
     private configService: ConfigService,
+    private buildResponse: BuildResponseUtil,
   ) {}
 
   async createPost(req: CreatePostBlog): Promise<any> {
@@ -20,8 +22,17 @@ export class BlogUseCase {
       blogData.slug = this.createSlug(blogData.title);
 
       await this.blogRepository.save(blogData);
+
+      return this.buildResponse.CreateResponse(
+        'success',
+        'blog created successfully',
+      );
     } catch (error) {
-      throw error;
+      console.log('Masuk', error);
+      return this.buildResponse.CreateResponse(
+        'failed',
+        'failed created post blog',
+      );
     }
   }
 

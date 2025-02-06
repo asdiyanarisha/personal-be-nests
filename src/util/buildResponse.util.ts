@@ -10,6 +10,14 @@ export class BuildResponseUtil {
     return resp;
   }
 
+  CreateResponse(status: string, message: string): ResponseCommon {
+    const resp = new ResponseCommon();
+    resp.status = status;
+    resp.message = message;
+
+    return resp;
+  }
+
   InternalServerError(): ResponseCommon {
     const resp = new ResponseCommon();
     resp.status = 'failed';

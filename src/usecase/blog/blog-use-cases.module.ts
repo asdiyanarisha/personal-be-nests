@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Blog } from '../../entities';
 import { ConfigModule } from '@nestjs/config';
 import configuration from '../../config/configuration';
+import { BuildResponseUtil } from '../../util';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import configuration from '../../config/configuration';
     }),
     TypeOrmModule.forFeature([Blog]),
   ],
-  providers: [BlogUseCase],
+  providers: [BlogUseCase, BuildResponseUtil],
   exports: [BlogUseCase],
 })
 export class BlogUseCasesModule {}
