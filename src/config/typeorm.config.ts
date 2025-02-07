@@ -1,6 +1,5 @@
 import { TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { User, Blog } from '../entities';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as process from 'node:process';
 
@@ -13,10 +12,9 @@ export const typeOrmConfig: TypeOrmModuleAsyncOptions = {
     username: config.get('database.user'),
     password: config.get('database.password'),
     database: config.get('database.name'),
-    // entities: [User, Blog],
     entities: ['dist/entities/**/*.ts'],
     synchronize: false,
-    logging: true,
+    logging: false,
     autoLoadEntities: true,
   }),
   inject: [ConfigService],
@@ -29,8 +27,8 @@ export const AppDataSource = new DataSource({
   username: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PWD,
   database: process.env.POSTGRES_DB,
-  entities: ['./src/entities/*.entity.ts'],
-  migrations: ['./src/database/migrations/*-migration.ts'],
+  entities: ['dist/entities/**/*.ts'],
+  migrations: ['dist/entities/*-migration.ts'],
   migrationsRun: false,
   logging: true,
 });
@@ -41,4 +39,4 @@ AppDataSource.initialize()
   })
   .catch((err) => {
     console.error('Error during Data Source initialization', err);
-  })
+  });
