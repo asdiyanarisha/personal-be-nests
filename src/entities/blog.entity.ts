@@ -23,6 +23,9 @@ export class Blog {
   @Column()
   slug: string;
 
+  @Column({ nullable: true })
+  url_image: string;
+
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt!: Date;
 

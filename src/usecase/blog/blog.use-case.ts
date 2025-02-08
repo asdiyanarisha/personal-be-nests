@@ -28,7 +28,6 @@ export class BlogUseCase {
         'blog created successfully',
       );
     } catch (error) {
-      console.log('Masuk', error);
       return this.buildResponse.CreateResponse(
         'failed',
         'failed created post blog',
