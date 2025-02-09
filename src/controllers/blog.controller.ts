@@ -1,4 +1,11 @@
-import { Body, Controller, Post, Res, UploadedFile, UseInterceptors } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Post,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { BlogUseCase } from '../usecase/blog';
 import { Response } from 'express';
 import { CreatePostBlog } from '../dtos/blog';
@@ -39,13 +46,11 @@ export class BlogController {
     @UploadedFile() file: Express.Multer.File,
     @Res() res: Response,
   ) {
-    const result = await this.blogUseCase.createPost(req);
+    const result = await this.blogUseCase.createPost(req, file.filename);
     if (result.status == 'failed') {
       res.status(400).send(result);
       return;
     }
-
-    console.log(file);
 
     res.status(201).send(result);
 

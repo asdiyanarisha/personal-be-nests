@@ -2,19 +2,19 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserUseCasesModule } from './usecase/user';
+import { BlogUseCasesModule } from './usecase/blog';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import {
   AuthController,
-  UserController,
-  RegisterController,
   BlogController,
+  RegisterController,
+  UserController,
 } from './controllers';
 import { BuildResponseUtil } from './util';
 import { AuthMiddleware } from './middleware/auth.middleware';
-import { BlogUseCasesModule } from './usecase/blog';
 
 @Module({
   imports: [

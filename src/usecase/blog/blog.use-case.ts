@@ -2,7 +2,6 @@ import { Injectable} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Blog } from '../../entities';
 import { Repository } from 'typeorm';
-import { ConfigService } from '@nestjs/config';
 import { CreatePostBlog } from '../../dtos/blog';
 import { BuildResponseUtil } from '../../util';
 
@@ -11,15 +10,15 @@ export class BlogUseCase {
   constructor(
     @InjectRepository(Blog)
     private blogRepository: Repository<Blog>,
-    private configService: ConfigService,
     private buildResponse: BuildResponseUtil,
   ) {}
 
-  async createPost(req: CreatePostBlog): Promise<any> {
+  async createPost(req: CreatePostBlog, filename: string): Promise<any> {
     try {
       const blogData = this.blogRepository.create(req);
 
       blogData.slug = this.createSlug(blogData.title);
+      blogData.url_image = filename;
 
       await this.blogRepository.save(blogData);
 
@@ -28,6 +27,7 @@ export class BlogUseCase {
         'blog created successfully',
       );
     } catch (error) {
+      console.log(error);
       return this.buildResponse.CreateResponse(
         'failed',
         'failed created post blog',
