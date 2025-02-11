@@ -4,7 +4,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
+import { Tag } from './tag.entity';
 
 @Entity()
 export class Blog {
@@ -17,8 +20,9 @@ export class Blog {
   @Column('text')
   content: string;
 
-  @Column()
-  tags: string;
+  @ManyToMany(() => Tag)
+  @JoinTable()
+  tags: Tag[];
 
   @Column()
   slug: string;
