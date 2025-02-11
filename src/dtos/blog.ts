@@ -1,5 +1,4 @@
 import { IsString, IsNotEmpty } from 'class-validator';
-import { Tag } from '../entities/tag.entity';
 
 export class CreatePostBlog {
   @IsString()
@@ -12,5 +11,5 @@ export class CreatePostBlog {
 
   @IsString()
   @IsNotEmpty()
-  tags: Tag[];
+  tags: string;
 }

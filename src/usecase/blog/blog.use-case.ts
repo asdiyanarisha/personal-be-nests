@@ -1,26 +1,55 @@
 import { Injectable} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Blog } from '../../entities';
-import { Repository } from 'typeorm';
+import { Blog, Tag } from '../../entities';
+import { DataSource, Repository } from 'typeorm';
 import { CreatePostBlog } from '../../dtos/blog';
 import { BuildResponseUtil } from '../../util';
 
 @Injectable()
 export class BlogUseCase {
   constructor(
+    private dataSource: DataSource,
     @InjectRepository(Blog)
     private blogRepository: Repository<Blog>,
+    @InjectRepository(Tag)
+    private tagRepository: Repository<Tag>,
     private buildResponse: BuildResponseUtil,
   ) {}
 
   async createPost(req: CreatePostBlog, filename: string): Promise<any> {
-    try {
-      const blogData = this.blogRepository.create(req);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
+    try {
+      const blogData = new Blog();
+      blogData.title = req.title;
+      blogData.content = req.content;
       blogData.slug = this.createSlug(blogData.title);
       blogData.url_image = filename;
 
-      await this.blogRepository.save(blogData);
+      const savedBlog = await queryRunner.manager.save(blogData);
+      const tags: Tag[] = [];
+
+      for (const tagStr of req.tags.split(',')) {
+        let tag = await queryRunner.manager.findOne(Tag, {
+          where: { name: tagStr },
+        });
+
+        if (!tag) {
+          tag = new Tag();
+          tag.name = tagStr;
+          tag = await queryRunner.manager.save(Tag, tag);
+        }
+
+        tags.push(tag);
+      }
+
+      savedBlog.tags = tags;
+      await queryRunner.manager.save(savedBlog);
+
+      // Commit transaction
+      await queryRunner.commitTransaction();
 
       return this.buildResponse.CreateResponse(
         'success',
@@ -28,10 +57,14 @@ export class BlogUseCase {
       );
     } catch (error) {
       console.log(error);
+      await queryRunner.rollbackTransaction();
       return this.buildResponse.CreateResponse(
         'failed',
         'failed created post blog',
       );
+    } finally {
+      // Release query runner
+      await queryRunner.release();
     }
   }
 
