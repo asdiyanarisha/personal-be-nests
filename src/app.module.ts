@@ -37,6 +37,9 @@ import { AuthMiddleware } from './middleware/auth.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes(BlogController);
+    consumer
+      .apply(AuthMiddleware)
+      .exclude('api/blog/public/(.*)')
+      .forRoutes(BlogController);
   }
 }

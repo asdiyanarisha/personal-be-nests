@@ -1,9 +1,11 @@
-import { Injectable} from '@nestjs/common';
+import { BadRequestException, NotFoundException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Blog, Tag } from '../../entities';
 import { DataSource, Repository } from 'typeorm';
 import { CreatePostBlog } from '../../dtos/blog';
 import { BuildResponseUtil } from '../../util';
+import { ResBlogBySlug } from "../../dtos";
+import { BlogFactoryService } from "./blog-factory.service";
 
 @Injectable()
 export class BlogUseCase {
@@ -14,7 +16,23 @@ export class BlogUseCase {
     @InjectRepository(Tag)
     private tagRepository: Repository<Tag>,
     private buildResponse: BuildResponseUtil,
+    private factory: BlogFactoryService,
   ) {}
+
+  async getPostBySlug(slug: string): Promise<ResBlogBySlug | null> {
+    const blog = await this.blogRepository.findOne({
+      where: { slug: slug },
+      relations: {
+        tags: true,
+      },
+    });
+
+    if (blog == undefined) {
+      throw new NotFoundException();
+    }
+
+    return this.factory.formatBlogSlug(blog);
+  }
 
   async createPost(req: CreatePostBlog, filename: string): Promise<any> {
     const queryRunner = this.dataSource.createQueryRunner();

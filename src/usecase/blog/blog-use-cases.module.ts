@@ -5,6 +5,7 @@ import { Blog, Tag } from '../../entities';
 import { ConfigModule } from '@nestjs/config';
 import configuration from '../../config/configuration';
 import { BuildResponseUtil } from '../../util';
+import { BlogFactoryService } from './blog-factory.service';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { BuildResponseUtil } from '../../util';
     }),
     TypeOrmModule.forFeature([Blog, Tag]),
   ],
-  providers: [BlogUseCase, BuildResponseUtil],
+  providers: [BlogUseCase, BuildResponseUtil, BlogFactoryService],
   exports: [BlogUseCase],
 })
 export class BlogUseCasesModule {}

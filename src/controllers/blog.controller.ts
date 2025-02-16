@@ -1,6 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
+  NotFoundException,
+  Param,
   Post,
   Res,
   UploadedFile,
@@ -19,6 +22,27 @@ export class BlogController {
     private blogUseCase: BlogUseCase,
     private buildResponse: BuildResponseUtil,
   ) {}
+
+  @Get('public/:slug')
+  async getPublicPostBySlug(
+    @Param() params: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    const slug = params.slug;
+    try {
+      const response = await this.blogUseCase.getPostBySlug(slug);
+      res.status(200).send({ msg: 'success', data: response });
+      return;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        res.status(404).send({ msg: 'failed' });
+        return;
+      }
+
+      res.status(500).send({ msg: 'internal server error' });
+      return;
+    }
+  }
 
   @Post()
   @UseInterceptors(
