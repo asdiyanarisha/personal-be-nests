@@ -1,11 +1,10 @@
-import { BadRequestException, NotFoundException, Injectable } from '@nestjs/common';
+import { NotFoundException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Blog, Tag } from '../../entities';
 import { DataSource, Repository } from 'typeorm';
-import { CreatePostBlog } from '../../dtos/blog';
+import { CreatePostBlog, ResBlogBySlug, ResListBlog } from '../../dtos';
 import { BuildResponseUtil } from '../../util';
-import { ResBlogBySlug } from "../../dtos";
-import { BlogFactoryService } from "./blog-factory.service";
+import { BlogFactoryService } from './blog-factory.service';
 
 @Injectable()
 export class BlogUseCase {
@@ -32,6 +31,23 @@ export class BlogUseCase {
     }
 
     return this.factory.formatBlogSlug(blog);
+  }
+
+  async getPosts(): Promise<ResListBlog[] | null> {
+    const blogs = await this.blogRepository.find({
+      relations: {
+        tags: true,
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
+    if (blogs == undefined) {
+      throw new NotFoundException();
+    }
+
+    return this.factory.formatBlogs(blogs);
   }
 
   async createPost(req: CreatePostBlog, filename: string): Promise<any> {

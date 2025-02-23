@@ -39,7 +39,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .exclude('api/blog/public/(.*)')
+      .exclude('api/blog/public/(.*)', 'api/blog/public')
       .forRoutes(BlogController);
   }
 }

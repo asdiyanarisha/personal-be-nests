@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { BlogUseCase } from '../usecase/blog';
 import { Response } from 'express';
-import { CreatePostBlog } from '../dtos/blog';
+import { CreatePostBlog } from '../dtos';
 import { BuildResponseUtil } from '../util';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -40,6 +40,26 @@ export class BlogController {
       }
 
       res.status(500).send({ msg: 'internal server error' });
+      return;
+    }
+  }
+
+  @Get('public')
+  async getPublicPost(
+    @Param() params: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      const responses = await this.blogUseCase.getPosts();
+      res.status(200).send({ msg: 'success', data: responses });
+      return;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        res.status(404).send({ msg: 'failed', data: [] });
+        return;
+      }
+
+      res.status(500).send({ msg: 'internal server error', data: [] });
       return;
     }
   }
