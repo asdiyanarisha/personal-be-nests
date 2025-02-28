@@ -24,6 +24,9 @@ export class ResListBlog {
   @IsString()
   slug: string;
 
+  @IsString()
+  description: string;
+
   @IsArray()
   tags: string[];
 

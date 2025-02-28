@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Blog } from '../../entities';
-import { ResBlogBySlug, ResListBlog } from "../../dtos";
+import { ResBlogBySlug, ResListBlog } from '../../dtos';
 
 @Injectable()
 export class BlogFactoryService {
@@ -25,10 +25,26 @@ export class BlogFactoryService {
       post.tags = blog.tags.map((u) => u.name);
       post.created_at = blog.createdAt.toUTCString();
       post.slug = blog.slug;
+      post.description = this.buildDescription(blog.content);
 
       posts.push(post);
     });
 
     return posts;
+  }
+
+  buildDescription(content: string): string {
+    try {
+      const re = new RegExp('<img[\\s\\S]*?>|<.*?>', 'g');
+      const result = content.replaceAll(re, ' ');
+
+      const reWs = new RegExp('\\s\\s', 'g');
+      const resultWs = result.replaceAll(reWs, '');
+
+      return resultWs.slice(0, 100).trim();
+    } catch (e) {
+      console.error('error', e);
+      return '';
+    }
   }
 }
