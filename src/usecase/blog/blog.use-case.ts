@@ -33,7 +33,10 @@ export class BlogUseCase {
     return this.factory.formatBlogSlug(blog);
   }
 
-  async getPosts(): Promise<ResListBlog[] | null> {
+  async getPosts(
+    offset: number,
+    limit: number = 10,
+  ): Promise<ResListBlog[] | null> {
     const blogs = await this.blogRepository.find({
       relations: {
         tags: true,
@@ -41,6 +44,8 @@ export class BlogUseCase {
       order: {
         createdAt: 'DESC',
       },
+      skip: offset,
+      take: limit,
     });
 
     if (blogs == undefined) {

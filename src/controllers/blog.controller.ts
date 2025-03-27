@@ -4,11 +4,11 @@ import {
   Get,
   NotFoundException,
   Param,
-  Post,
+  Post, Query,
   Res,
   UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
+  UseInterceptors
+} from "@nestjs/common";
 import { BlogUseCase } from '../usecase/blog';
 import { Response } from 'express';
 import { CreatePostBlog } from '../dtos';
@@ -47,10 +47,12 @@ export class BlogController {
   @Get('public')
   async getPublicPost(
     @Param() params: any,
+    @Query('offset') offset: number,
+    @Query('limit') limit: number,
     @Res() res: Response,
   ): Promise<void> {
     try {
-      const responses = await this.blogUseCase.getPosts();
+      const responses = await this.blogUseCase.getPosts(offset, limit);
       res.status(200).send({ msg: 'success', data: responses });
       return;
     } catch (error) {
