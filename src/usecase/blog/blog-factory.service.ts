@@ -20,6 +20,7 @@ export class BlogFactoryService {
 
     blogs.forEach((blog) => {
       const post = new ResListBlog();
+      post.id = blog.id;
       post.title = blog.title;
       post.url_image = 'storage/' + blog.url_image;
       post.tags = blog.tags.map((u) => u.name);

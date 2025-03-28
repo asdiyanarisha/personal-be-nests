@@ -1,4 +1,4 @@
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsString } from "class-validator";
 
 export class ResBlogBySlug {
   @IsString()
@@ -18,6 +18,9 @@ export class ResBlogBySlug {
 }
 
 export class ResListBlog {
+  @IsNumber()
+  id: number;
+
   @IsString()
   title: string;
 

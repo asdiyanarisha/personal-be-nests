@@ -7,8 +7,8 @@ import {
   Post, Query,
   Res,
   UploadedFile,
-  UseInterceptors
-} from "@nestjs/common";
+  UseInterceptors,
+} from '@nestjs/common';
 import { BlogUseCase } from '../usecase/blog';
 import { Response } from 'express';
 import { CreatePostBlog } from '../dtos';
@@ -36,6 +36,29 @@ export class BlogController {
     } catch (error) {
       if (error instanceof NotFoundException) {
         res.status(404).send({ msg: 'failed' });
+        return;
+      }
+
+      res.status(500).send({ msg: 'internal server error' });
+      return;
+    }
+  }
+
+  @Get('/post/:id')
+  async getBlogById(@Param() params: any, @Res() res: Response): Promise<void> {
+    const blogId = params.id;
+    if (blogId === undefined) {
+      res.status(404).send({ msg: 'parameter blog id not found' });
+      return;
+    }
+
+    try {
+      const response = await this.blogUseCase.getPostById(blogId);
+      res.status(200).send({ msg: 'success', data: response });
+      return;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        res.status(404).send({ msg: 'failed', data: error.getResponse() });
         return;
       }
 

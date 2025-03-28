@@ -33,6 +33,21 @@ export class BlogUseCase {
     return this.factory.formatBlogSlug(blog);
   }
 
+  async getPostById(id: number): Promise<ResBlogBySlug | null> {
+    const blog = await this.blogRepository.findOne({
+      where: { id: id },
+      relations: {
+        tags: true,
+      },
+    });
+
+    if (blog == undefined) {
+      throw new NotFoundException();
+    }
+
+    return this.factory.formatBlogSlug(blog);
+  }
+
   async getPosts(
     offset: number,
     limit: number = 10,
