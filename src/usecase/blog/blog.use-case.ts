@@ -48,6 +48,25 @@ export class BlogUseCase {
     return this.factory.formatBlogSlug(blog);
   }
 
+  async editPostById(id: number, req: CreatePostBlog): Promise<void> {
+    const blog = await this.blogRepository.findOne({
+      where: { id: id },
+      relations: {
+        tags: true,
+      },
+    });
+
+    if (blog == undefined) {
+      throw new NotFoundException();
+    }
+
+    const updatedData = { content: req.content, title: req.title };
+
+    await this.blogRepository.update(updatedData, { id: id });
+
+    return;
+  }
+
   async getPosts(
     offset: number,
     limit: number = 10,

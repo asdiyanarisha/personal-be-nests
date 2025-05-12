@@ -4,7 +4,9 @@ import {
   Get,
   NotFoundException,
   Param,
-  Post, Query,
+  Post,
+  Put,
+  Query,
   Res,
   UploadedFile,
   UseInterceptors,
@@ -12,9 +14,8 @@ import {
 import { BlogUseCase } from '../usecase/blog';
 import { Response } from 'express';
 import { CreatePostBlog } from '../dtos';
-import { BuildResponseUtil } from '../util';
+import { BuildResponseUtil, MulterOptions } from '../util';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 
 @Controller('api/blog')
 export class BlogController {
@@ -67,6 +68,33 @@ export class BlogController {
     }
   }
 
+  @Put('/post/:id')
+  async editBlogById(
+    @Body() req: CreatePostBlog,
+    @Param() params: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    const blogId = params.id;
+    if (blogId === undefined) {
+      res.status(404).send({ msg: 'parameter blog id not found' });
+      return;
+    }
+
+    try {
+      await this.blogUseCase.editPostById(blogId, req);
+      res.status(200).send({ msg: 'success' });
+      return;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        res.status(404).send({ msg: 'failed', data: error.getResponse() });
+        return;
+      }
+
+      res.status(500).send({ msg: 'internal server error' });
+      return;
+    }
+  }
+
   @Get('public')
   async getPublicPost(
     @Param() params: any,
@@ -90,26 +118,7 @@ export class BlogController {
   }
 
   @Post()
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads/',
-        filename: function (req, file, cb) {
-          const originalNameSplit = file.originalname.split('.');
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(
-            null,
-            file.fieldname +
-              '-' +
-              uniqueSuffix +
-              '.' +
-              originalNameSplit[originalNameSplit.length - 1],
-          );
-        },
-      }),
-    }),
-  )
+  @UseInterceptors(FileInterceptor('file', MulterOptions))
   async createPostBlog(
     @Body() req: CreatePostBlog,
     @UploadedFile() file: Express.Multer.File,
