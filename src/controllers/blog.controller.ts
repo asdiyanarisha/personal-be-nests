@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Logger,
   NotFoundException,
   Param,
   Post,
@@ -19,6 +20,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('api/blog')
 export class BlogController {
+  private readonly logger = new Logger(BlogController.name);
+
   constructor(
     private blogUseCase: BlogUseCase,
     private buildResponse: BuildResponseUtil,
@@ -69,19 +72,23 @@ export class BlogController {
   }
 
   @Put('/post/:id')
+  @UseInterceptors(FileInterceptor('file', MulterOptions))
   async editBlogById(
     @Body() req: CreatePostBlog,
-    @Param() params: any,
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id') id: number,
     @Res() res: Response,
   ): Promise<void> {
-    const blogId = params.id;
-    if (blogId === undefined) {
+    if (id === undefined) {
       res.status(404).send({ msg: 'parameter blog id not found' });
       return;
     }
 
     try {
-      await this.blogUseCase.editPostById(blogId, req);
+      await this.blogUseCase.editPostById(id, req);
+      
+      this.logger.log(`Successfully edited blog post with ID: ${id}`);
+      
       res.status(200).send({ msg: 'success' });
       return;
     } catch (error) {

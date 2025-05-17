@@ -61,8 +61,14 @@ export class BlogUseCase {
     }
 
     const updatedData = { content: req.content, title: req.title };
+    console.log('Data yang akan diupdate:', updatedData);
 
-    await this.blogRepository.update(updatedData, { id: id });
+    const result = await this.blogRepository.update({ id: id }, updatedData);
+    console.log('Hasil update:', {
+      affected: result.affected, // Jumlah row yang diupdate
+      raw: result.raw, // Raw data dari database
+      generatedMaps: result.generatedMaps // Entity yang diupdate
+    });
 
     return;
   }
