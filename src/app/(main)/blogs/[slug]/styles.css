@@ -1,0 +1,235 @@
+/* Styling untuk blok kode React Quill */
+.ql-code-block-container {
+  background: #282c34;
+  color: #abb2bf;
+  border-radius: 6px;
+  padding: 1em;
+  margin: 1.5em 0;
+  overflow-x: auto;
+  font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 0.9em;
+  line-height: 1.6;
+  position: relative;
+}
+
+/* Menambahkan warna background dan spacing untuk tiap baris */
+.ql-code-block-container .ql-ui {
+  display: none; /* Menghilangkan UI tambahan */
+}
+
+/* Style untuk tiap baris kode */
+.ql-code-block-container > div {
+  position: relative;
+  padding-left: 3.5em;
+  min-height: 1.6em;
+}
+
+/* Tambahkan nomor baris */
+.ql-code-block-container > div:before {
+  content: attr(data-line-number);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3em;
+  padding-right: 0.5em;
+  text-align: right;
+  color: #636d83;
+  user-select: none;
+}
+
+/* Berikan efek hover pada baris */
+.ql-code-block-container > div:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Jika tidak ada atribut data-line-number, tambahkan secara otomatis */
+.ql-code-block-container > div:not([data-line-number]) {
+  counter-increment: line;
+}
+
+.ql-code-block-container > div:not([data-line-number]):before {
+  content: counter(line);
+}
+
+/* Reset counter setiap blok kode baru */
+.ql-code-block-container {
+  counter-reset: line;
+}
+
+/* Warna untuk syntax highlighting */
+.ql-code-block-container .ql-syntax {
+  color: #abb2bf;
+}
+
+/* Keywords */
+.ql-code-block-container .ql-token.ql-keyword {
+  color: #c678dd;
+}
+
+/* Strings */
+.ql-code-block-container .ql-token.ql-string {
+  color: #98c379;
+}
+
+/* Comments */
+.ql-code-block-container .ql-token.ql-comment {
+  color: #5c6370;
+  font-style: italic;
+}
+
+/* Numbers */
+.ql-code-block-container .ql-token.ql-number {
+  color: #d19a66;
+}
+
+/* Functions */
+.ql-code-block-container .ql-token.ql-function {
+  color: #61afef;
+}
+
+/* Classes dan types */
+.ql-code-block-container .ql-token.ql-class-name,
+.ql-code-block-container .ql-token.ql-type {
+  color: #e5c07b;
+}
+
+/* Tambahkan toolbar sederhana di atas blok kode */
+.ql-code-block-container:before {
+  content: "code";
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #3a404b;
+  color: #abb2bf;
+  padding: 0.2em 0.8em;
+  font-size: 0.7em;
+  border-radius: 0 6px 0 6px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* Styling untuk kode inline dari React Quill */
+.ql-code {
+  background: #f5f5f5;
+  color: #e83e8c;
+  border-radius: 3px;
+  padding: 2px 4px;
+  font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 0.9em;
+}
+
+/* Buat scrollbar lebih menarik untuk blok kode */
+.ql-code-block-container::-webkit-scrollbar {
+  height: 8px;
+  background-color: #282c34;
+}
+
+.ql-code-block-container::-webkit-scrollbar-thumb {
+  background-color: #4b5263;
+  border-radius: 4px;
+}
+
+.ql-code-block-container::-webkit-scrollbar-thumb:hover {
+  background-color: #5c6370;
+}
+
+/* Tambahan untuk tampilan kode di mobile */
+@media (max-width: 640px) {
+  .ql-code-block-container {
+    font-size: 0.8em;
+    padding: 0.8em;
+  }
+  
+  .ql-code-block-container > div {
+    padding-left: 2.5em;
+  }
+  
+  .ql-code-block-container > div:before {
+    width: 2em;
+  }
+}
+
+/* Tambahkan highlight untuk beberapa bahasa populer */
+/* JavaScript/TypeScript */
+.ql-code-block-container[data-language="javascript"] > div,
+.ql-code-block-container[data-language="typescript"] > div,
+.ql-code-block-container[data-language="js"] > div,
+.ql-code-block-container[data-language="ts"] > div {
+  color: #abb2bf;
+}
+
+.ql-code-block-container[data-language="javascript"]:before,
+.ql-code-block-container[data-language="typescript"]:before,
+.ql-code-block-container[data-language="js"]:before,
+.ql-code-block-container[data-language="ts"]:before {
+  content: "javascript";
+  background-color: #f7df1e;
+  color: #000;
+}
+
+/* HTML */
+.ql-code-block-container[data-language="html"] > div {
+  color: #abb2bf;
+}
+
+.ql-code-block-container[data-language="html"]:before {
+  content: "html";
+  background-color: #e34c26;
+  color: #fff;
+}
+
+/* CSS */
+.ql-code-block-container[data-language="css"] > div {
+  color: #abb2bf;
+}
+
+.ql-code-block-container[data-language="css"]:before {
+  content: "css";
+  background-color: #264de4;
+  color: #fff;
+}
+
+/* Tambahan warna untuk token-token lain */
+.ql-code-block-container .ql-token.ql-operator {
+  color: #56b6c2;
+}
+
+.ql-code-block-container .ql-token.ql-variable {
+  color: #e06c75;
+}
+
+.ql-code-block-container .ql-token.ql-property {
+  color: #e06c75;
+}
+
+.ql-code-block-container .ql-token.ql-boolean {
+  color: #d19a66;
+}
+
+/* Style tambahan untuk copy button */
+.ql-code-block-container {
+  position: relative;
+}
+
+.ql-code-block-container .copy-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #3a404b;
+  color: #abb2bf;
+  border: none;
+  border-radius: 0 6px 0 6px;
+  padding: 0.2em 0.8em;
+  font-size: 0.7em;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.ql-code-block-container:hover .copy-button {
+  opacity: 1;
+}
+
+.ql-code-block-container .copy-button:hover {
+  background: #4b5263;
+} 
