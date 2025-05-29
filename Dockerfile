@@ -36,6 +36,7 @@ RUN npm install crypto-browserify stream-browserify assert buffer
 # Copy build files from development stage
 COPY --from=development /usr/src/app/dist ./dist
 COPY --from=development /usr/src/app/node_modules ./node_modules
+COPY --from=development /usr/src/app/uploads ./uploads
 
 # Expose application port
 EXPOSE 3000
